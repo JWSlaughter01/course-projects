@@ -7,9 +7,9 @@
   Add your open source license, GitHub uses MIT license.
 -->
 
-# GitHub Pages
+# CS1337
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+_This page holds all of the in-class activities and homework from my Computer Science 1 (CS 1337) class, which was done entirely in C++_
 
 </header>
 
@@ -20,7 +20,7 @@ _Create a site or blog from your GitHub repositories with GitHub Pages._
   Link to docs.github.com for further explanations.
   Encourage users to open new tabs for steps!
 -->
-
+<!--
 ## Step 1: Enable GitHub Pages
 
 _Welcome to GitHub Pages and Jekyll :tada:!_
@@ -46,9 +46,10 @@ The first step is to enable GitHub Pages on this [repository](https://docs.githu
 -->
 
 ---
-
+<!--
 Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
 
 &copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
 
 </footer>
+-->
