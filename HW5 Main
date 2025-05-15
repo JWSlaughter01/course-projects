@@ -1,0 +1,60 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 10/31/2024
+;Desc: Ch5 Main Project
+;Clear screen, cursor setm and console display
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+promptA BYTE "Enter integer A: ", 0	;first integer
+promptB BYTE "Enter integer B: ", 0	;second integer
+Sum BYTE "int A + int B = ", 0	;sum display message
+row BYTE 12		;default size is 25 rows
+column BYTE 40	;default size is 80 columns
+intS SDWORD ?	;int Sum
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+call Clrscr		;clears screen
+;call GetMaxXY	I wanted to try messing with this command to get the maximum size and divide by 2 for columns and rows
+mov dh, 13		;row 12
+mov dl, 40		;column 40
+call GotoXY		;set cursor by dh and dl registers
+mov edx, OFFSET promptA
+call WriteString
+call ReadInt
+mov intS, eax	;moves a into intS
+
+;Int A acquired, time to prompt for int B
+
+call Clrscr
+mov dh, 13		;row 12
+mov dl, 40		;column 40
+call GotoXY		;set cursor
+mov edx, OFFSET promptB
+call WriteString
+call ReadInt
+add intS, eax	;adds B to A for sum
+
+;Int A and B acquired, time to display A + B
+
+call Clrscr
+mov dh, 13		;row 12
+mov dl, 40		;column 40
+call GotoXY		;set cursor
+mov edx, OFFSET Sum	;WriteString checks edx
+call WriteString
+mov eax, intS	;WriteInt operand checks eax register
+call WriteInt	;displays sum of A and B
+
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
