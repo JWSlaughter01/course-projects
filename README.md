@@ -7,9 +7,9 @@
   Add your open source license, GitHub uses MIT license.
 -->
 
-# GitHub Pages
+# J. Slaughter Code Repository
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+_Each branch from this page contains all of the code that I wrote for different courses_
 
 </header>
 
@@ -21,12 +21,34 @@ _Create a site or blog from your GitHub repositories with GitHub Pages._
   Encourage users to open new tabs for steps!
 -->
 
-## Step 1: Enable GitHub Pages
+## CS 1337 Computer Science I
 
-_Welcome to GitHub Pages and Jekyll :tada:!_
+"Review of control structures and data types with emphasis on structured data types. Applies the
+object-oriented programming paradigm, focusing on the definition and use of classes along with
+the fundamentals of object-oriented design. Includes basic analysis of algorithms, searching and
+sorting techniques, and an introduction to software engineering. The programming language of
+choice is C/C++." - Course Syllabus
 
-The first step is to enable GitHub Pages on this [repository](https://docs.github.com/en/get-started/quickstart/github-glossary#repository). When you enable GitHub Pages on a repository, GitHub takes the content that's on the main branch and publishes a website based on its contents.
+All code for CS1337 was written in C++.
 
+## CS 3345  Data Structures and Introduction to Algorithmic Analysis
+
+"Analysis of algorithms including time complexity and Big-O notation. Analysis of stacks, queues,
+and trees, including B-trees. Heaps, hashing, and advanced sorting techniques. Disjoint sets and
+graphs. Course emphasizes design and implementation.)" - Course Syllabus
+
+All code for CS 3345 was written in Java.
+
+## CS 2325  Computer Organization
+
+"The organization of computer systems is introduced using assembly language. Topics include basic 
+concepts of computer architecture and organization, memory hierarchy, data types, computer arithmetic, 
+control structures, interrupt handling, instruction sets, performance metrics, and the mechanics of 
+testing and debugging computer systems. Embedded systems and device interfacing are introduced. 
+Additionally, this class is taught with Intel assembly language." - Course Syllabus
+
+All code for CS 2325 was written in Assembly for MASM
+<!--
 ### :keyboard: Activity: Enable GitHub Pages
 
 1. Open a new browser tab, and work on the steps in your second tab while you read the instructions in this tab.
@@ -44,7 +66,7 @@ The first step is to enable GitHub Pages on this [repository](https://docs.githu
   <<< Author notes: Footer >>>
   Add a link to get support, GitHub status page, code of conduct, license link.
 -->
-
+<!--
 ---
 
 Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
