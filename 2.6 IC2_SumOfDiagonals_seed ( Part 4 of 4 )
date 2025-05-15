@@ -1,0 +1,57 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
+using namespace std;
+const int MAXROWS = 4;
+const int MAXCOLS = 4;
+
+// write the prototypes for the two functions
+int sumMajorDiagonal(int m[MAXROWS][MAXCOLS]);
+int sumOtherDiagonal(int m[MAXROWS][MAXCOLS]);
+int main()
+{
+   // code here
+   int seed;
+   //cout << (prompt);
+   cin >> seed;
+   srand(seed);
+   
+   int A[MAXROWS][MAXCOLS];
+   
+   //nested for loop for generation, O n^2
+   for (int i = 0; i < MAXROWS; i++) {
+      for (int j = 0; j < MAXCOLS; j++) {
+         A[i][j] = rand()% 50;
+         cout << setw(4) << A[i][j];
+      }
+      cout << endl;
+   }
+  
+    cout << "Sum of the elements in the major diagonal is "
+        << sumMajorDiagonal(A) << endl;
+
+    cout << "Sum of the elements in the other diagonal is "
+        << sumOtherDiagonal(A) << endl;
+}
+
+int sumMajorDiagonal(int m[MAXROWS][MAXCOLS]) {
+   
+    // code here
+    //adding positions (0,0), (1,1), (2,2), (3,3)
+    int sum = 0;
+    for (int i = 0; i < MAXROWS; i++) {
+       sum += m[i][i];
+    }
+    return sum;
+  }
+
+  int sumOtherDiagonal(int m[MAXROWS][MAXCOLS]) {
+    
+      // code here
+      int sum = 0;
+      for (int i = 0; i < MAXROWS; i++) {
+         sum += m[i][MAXCOLS - 1 - i];
+      }
+      return sum;
+  }
