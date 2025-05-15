@@ -1,0 +1,59 @@
+#include <iostream>
+using namespace std;
+
+#include "ItemToPurchase.h"
+
+
+int main() {
+   
+   /* Type your code here */
+   //initializing objects..
+   ItemToPurchase I1;
+   ItemToPurchase I2;
+   
+   //creating variables...
+   string item;
+   int price;
+   int quantity;
+   int total;
+   
+   //inputing into
+   cout << "Item 1" << endl << "Enter the item name:";
+   //cin >> item;
+   getline(cin, item); //changing method of inputing name, so that whitespace is allowed
+   cout << endl << "Enter the item price:";
+   cin >> price;
+   cout << endl << "Enter the item quantity:";
+   cin >> quantity;
+   cout << endl << endl;
+   I1.SetName(item);
+   I1.SetPrice(price);
+   I1.SetQuantity(quantity);
+   
+   //prompting second item, use cin.ignore()
+   cin.ignore();
+   
+   //inputing second object
+   cout << "Item 2" << endl << "Enter the item name:";
+   //cin >> item;
+   getline(cin, item); 
+   cout << endl << "Enter the item price:";
+   cin >> price;
+   cout << endl << "Enter the item quantity:";
+   cin >> quantity;
+   //cout << endl;
+   I2.SetName(item);
+   I2.SetPrice(price);
+   I2.SetQuantity(quantity);
+   
+   //displaying cost for each item
+   cout << endl << endl << "TOTAL COST" << endl;
+   cout << I1.GetName() << " " << I1.GetQuantity() << " @ $" << I1.GetPrice() << " = $" << I1.GetQuantity() * I1.GetPrice() << endl;
+   cout << I2.GetName() << " " << I2.GetQuantity() << " @ $" << I2.GetPrice() << " = $" << I2.GetQuantity() * I2.GetPrice() << endl;
+   
+   //calculating total cost
+   total = (I1.GetQuantity() * I1.GetPrice()) + (I2.GetQuantity() * I2.GetPrice());
+   //displaying total cost
+   cout << endl << "Total: $" << total;
+   return 0;
+}
