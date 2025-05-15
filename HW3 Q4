@@ -1,0 +1,23 @@
+;Author: John Slaughter
+;Date: 9/28/2024
+;Desc: COCS 2325 Homework 3, code 4 0f 4
+;Listing File
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+add eax, 5
+add edx, 5
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
