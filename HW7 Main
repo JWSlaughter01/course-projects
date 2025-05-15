@@ -1,0 +1,81 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 11/26/2024
+;Desc: Ch7 Main Program
+;packed decimal
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+;copied from assignment page
+numbers DWORD 12345678h, 23456781h, 45678123h,78654321h, 56781234h
+buffer BYTE 9 DUP(0)
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+
+;write assembly code here
+	mov ecx, 5			;ecx = 00000005
+	mov esi, offset numbers	;esi = 009B4000
+	mov edi, offset buffer	;edi = 009B1027
+Loop1:
+	push ecx
+	push edi
+	mov eax, [esi]
+	;shuffling around numbers in register before starting
+	mov ebx, eax
+	mov dh, ah
+	mov dl, al
+	mov ah, dl
+	mov al, dh
+	shl eax, 16
+	shr ebx, 16
+	mov dl, bl
+	mov dh, bh
+	mov bl, dh
+	mov bh, dl
+	mov ax, bx
+	;I want it flipped..
+	;shl eax, 24 w/ I get "00000078"
+	call PackedToAsc
+	pop edi	;originally had this as ecx, but LIFO
+	pop ecx	;FILO
+	;add edi, 8	w/ this, everyline was growing in length
+	add esi, 4
+	loop Loop1	;should loop 5 times, like in assignment
+	
+
+
+INVOKE ExitProcess,0
+main ENDP
+
+PackedToAsc PROC
+	mov ecx, 4
+
+Loop2:
+	mov bl, al
+
+	shr al, 4
+	add al, '0'
+	mov BYTE ptr [edi], al
+	inc edi
+
+	and bl, 00Fh
+	add bl, '0'
+	mov BYTE ptr [edi], bl
+	inc edi
+
+	shr eax, 8
+	loop Loop2
+	mov BYTE ptr [edi], 0
+
+	mov edx, offset buffer
+	call WriteString
+	call crlf
+	ret
+PackedToAsc ENDP
+
+END main
