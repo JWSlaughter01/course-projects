@@ -1,0 +1,77 @@
+/*Get hourly pay rate & # of hours from the user, compute & output the # of regular hours, # of overtime hours & the weekly pay, subject to following conditions:
+
+Do not pay for the extra hours beyond 50.
+For the overtime hours (hours beyond regular 40 hours), pay at 1.5 times regular rate.
+Here is one sample input & output:
+
+Input hourly pay rate: 10
+Input # of hours: 57
+Regular hours: 40 Overtime hours: 10
+Your weekly pay: 550
+*/
+
+
+
+#include <iostream>
+
+
+using namespace std;
+int main()
+{
+    double payRate;
+    double hours;
+    double weeklyWages;
+
+    cout <<  "Input hourly pay rate: " ;
+    cin >> payRate;
+
+    cout <<  "Input # of hours: " ;
+    cin >> hours;
+
+   //Input validation
+   //if hours are below 0, then the hours are negative
+   while (hours < 0) {
+        cout << "\nInvalid input. Hours cannot be negative" << endl;
+        cout << "Enter a valid value: " ;
+        cin >> hours;
+
+    }
+
+    
+/*
+
+      Enter Code
+      
+   */
+   //counter for overtime
+   double overtimeHours = 0; 
+   double regularHours = 0;
+   //if hours are equal to or below 40, there is no overtime
+   if (hours <= 40) {
+       weeklyWages = hours * payRate;
+       regularHours = hours;
+   }
+   //else if there are hours over 40, then there is overtime pay
+   else {
+       overtimeHours = hours - 40;
+       regularHours = 40;
+       //check because instructions say to not pay for overtime hours over a maximum of 50 hours per week
+       if (overtimeHours > 10) {
+           //maximum overtime hours set to 10, per the comment at the top of the code
+           overtimeHours = 10;
+       }
+       weeklyWages = (regularHours * payRate) + (overtimeHours * payRate * 1.5);
+   }
+   cout << "\nRegular hours: " << regularHours;
+   cout << " Overtime hours: " << overtimeHours << endl;
+   cout << "Your weekly pay: " << weeklyWages << endl;
+   
+   /*
+   // This is how your output shoudl be. 
+   //If you declare variables accordingly you should be able to get correct answers.
+    cout << "\nRegular hours: " <<  regularHours;
+    cout << " Overtime hours: " <<   overtimeHours << endl;
+    cout << "Your weekly pay: " << weeklyWages << endl;
+   */
+
+}
