@@ -1,0 +1,57 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 11/19/2024
+;Desc: Ch6 Main
+;bit map
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+Colour DWORD ?
+Message BYTE "Lines left: ", 0
+Mess2 BYTE "Loop complete", 0
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+	call Randomize	;without this command, it'd be the same every time
+	mov ecx, 20
+L1:
+	mov eax, 10
+	call RandomRange	;random number between 0 and 9
+	mov Colour, eax
+	
+	;color comparisons
+	cmp Colour, 2
+	jbe Whit	;if =< 2, white
+	cmp Colour, 3
+	je Blu	;if = 3, blue
+
+	;if else, green
+	mov eax, 2	;set color green
+	jmp SetColor	;avoid whit and blu
+Whit:
+	mov eax, 15	;set color white
+	jmp SetColor
+Blu:
+	mov eax, 1	;set color blue
+SetColor:
+	call SetTextColor
+	mov edx, OFFSET Message
+	call WriteString
+	mov al, cl
+	call WriteDec
+	call Crlf
+	loop L1
+
+	mov eax, 5	;magenta
+	call SetTextColor
+	mov edx, OFFSET Mess2
+	call WriteString
+
+INVOKE ExitProcess,0
+main ENDP
+END main
