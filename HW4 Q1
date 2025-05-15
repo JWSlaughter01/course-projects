@@ -1,0 +1,30 @@
+;Author: John Slaughter
+;Date: 10/07/2024
+;Desc: COCS 2325 Homework 4, code 1 0f 4 (short)
+;MOV exercise
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+three	DWORD 12345678h
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+mov esi, OFFSET three ;memory address
+mov eax, DWORD PTR [three-2]
+mov ax, WORD PTR [three +2]
+mov ebx, three
+mov three, eax
+;mov ebx, 0	;throwaway line for breakpoint
+
+
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
