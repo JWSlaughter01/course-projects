@@ -1,0 +1,51 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 11/14/2024
+;Desc: Ch6 Short Exercise 2
+;bit manipulation
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+;Bn	BYTE 3
+;Cn	BYTE 3
+equM BYTE "Dx is less than or equal to CX", 0
+dxM BYTE "DX = ", 0
+cxM BYTE "CX = ", 0
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+	mov dx, 3
+	mov cx, 3
+
+	cmp dx, cx
+	jbe L1
+	jmp finl
+
+L1:
+	mov eax, 0
+	mov ax, dx
+	mov edx, offset dxM
+	invoke WriteString
+	invoke WriteDec
+	call Crlf
+
+	mov ax, cx
+	mov edx, offset cxM
+	invoke WriteString
+	invoke WriteDec
+	call Crlf
+
+	mov edx, offset equM
+	invoke WriteString
+
+finl:
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
