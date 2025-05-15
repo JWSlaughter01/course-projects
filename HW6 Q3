@@ -1,0 +1,40 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 11/14/2024
+;Desc: Ch6 Short Exercise 3
+;bit manipulation
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+l3M	BYTE "Equal to zero", 0
+l4M	BYTE "Not Equal to zero", 0
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+	mov al, 0FFh
+	and al, 0FCh
+
+	cmp al, 0
+	je L3
+	jmp L4
+
+L3:
+	mov edx, offset l3M
+	call WriteString
+	jmp fnal
+
+L4:
+	mov edx, offset l4M
+	call WriteString
+
+fnal:
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
