@@ -1,0 +1,122 @@
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <ctime> // contains prototype for function time
+using namespace std;
+
+#define SIZE 40
+
+void printArray(int randArray[]);	// Function prototype
+void bubbleSort(int* list[]);		// Function prototype
+void printPointerArray(int* ptrArray[]);	// Function prototype
+void swapIntPtr(int** xptr, int** yptr);	// Function prototype
+
+int main()
+{
+
+	int seed ;
+	cout << "Enter seed: ";
+	cin >> seed;
+   srand(seed );
+
+	int dataArray[SIZE] = { 0 };
+	int* pointerArray[SIZE];
+	
+	// Initializing values in Data Array
+	for (int index = 0; index < SIZE; index++)
+	{
+		dataArray[index] = rand() % 3000;
+	}
+
+	// Printing four different data sets
+	printf("Before Sorting, values in Data Array: \n");
+	printArray(dataArray);
+	printf("\n");
+
+	// Initializing Pointer array with the address of each element in data array
+	//loop starting from position 0 and moving toward the end of the array
+	for (int i = 0; i < SIZE; i++) {
+	   //complete this code
+	   pointerArray[i] = &dataArray[i];
+	}
+	
+
+	printf("Before Sorting, values in Pointer Array and the value it is pointing at: \n");
+	printPointerArray(pointerArray);
+	printf("\n");
+
+	// Calling function Bubble SOrt
+	bubbleSort(pointerArray);
+
+	// After Sorting printing the values
+	printf("\n");
+	printf("After Sorting, values in Pointer Array and the value it is pointing at:  \n");
+	printPointerArray(pointerArray);
+	printf("\n");
+	
+
+	printf("\n");
+	printf("After Sorting, values in Data Array: \n");
+	printArray(dataArray);
+	printf("\n");
+   return 0;
+}
+
+// complete both the print functions and bubbleSort.
+//Call the swapIntPrt function from Bubble sort for swapping the 
+
+//print array
+//This function should display the data in the Data Array, 10 numbers per line in a 6 byte field.
+void printArray(int randArray[]) {
+    for (int i = 0; i < SIZE; i++) {
+        cout << setw(6) << randArray[i];
+        //if check for length, almost did i % 9, thinking about the starting position of 10
+        //but that'd be bad for later iterations
+        if ((i + 1) % 10 == 0) {
+            //end line, following through with the "10 number per line"
+            cout << endl;
+        }
+    }
+}
+
+/*
+This function should implement the Bubble Sort (or some other common sorting algorithm) on the Pointer Array. 
+Note that we are not sorting the Data Array in this problem, only the Pointer Array. Therefore, the pseudocode for the Bubble Sort 
+given above will have to be modified to work on pointers. Furthermore, the sorting will be done according to the values the pointers are pointing to.
+
+Referring back to Bubble Sort, if we are comparing the values pointed to in one adjacent pointer element to another, 
+and the value pointed to is smaller in the right hand element than the left, then we swap the pointers, not the values in the Data Array.
+*/
+void bubbleSort(int* list[]) {
+    for (int i = 0; i < SIZE - 1; i++) {
+        //next line was originally "(int j = i + 1; j < SIZE; j++)", but I was not getting the desired results that way
+        //I think the initializing of "int j = i + 1" was the biggest problem
+        for (int j = 0; j < SIZE - i -1; j++) {
+            if (*list[j] > *list[j+1]) {
+               swapIntPtr(&list[j], &list[j + 1]);
+            }
+        }
+    }
+}
+
+//This function should display the data pointed to in the Pointer Array, 10 numbers per line in a 6 byte field. Note that this function does not display addresses.
+//It should display the integers found in the data set, but in sorted order.
+void printPointerArray(int* ptrArray[]) {
+    //should be very similar to the "Print Array" function above
+    for (int i = 0; i < SIZE; i++) {
+        //it says not to display addresses, but I am supposed to show where in the memory is being pointed toward
+        //This looks the closest to what I want in testing and comparing console output to expected shown in Zybooks
+        cout << setw(6) << ptrArray[i] << " " << setw(6) << *ptrArray[i] << " ";
+        if ((i + 1) % 10 == 0) {
+            //end line, following through with the "10 number per line"
+            cout << endl;
+        }
+    }
+}
+
+//When called on two pointer arguments, this function should swap the values of the pointer arguments.
+void swapIntPtr(int** xptr, int** yptr) {
+    int* temp = *xptr;
+    *xptr = *yptr;
+    *yptr = temp;
+}
