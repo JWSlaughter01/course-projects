@@ -1,0 +1,100 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
+using namespace std;
+
+const int ROW = 3;           // Number of divisions
+const int COL = 3;
+// write the prototypes for the two functions
+void addMatrix(double m1[ROW][COL], double m2[ROW][COL],double m3[ROW][COL] );
+void printResult(double m1[ROW][COL], double m2[ROW][COL], double m3[ROW][COL], char op);
+
+int main()
+{
+    int seed;
+    //cout << "Enter a seed value: ";
+    cin >> seed;
+    srand(seed);
+    
+    //code your program here
+    double matrix1[ROW][COL];
+    double matrix2[ROW][COL];
+    
+    //using seed to generate random numbers..
+    /* Originally, I was going to have both matrixes generated in one loop together, however I noticed an issue
+    the expected matrices had expected m1[0][1] in position m2[0][0], which told me that matrix one was supposed
+    to fully generate before matrix 2 began generating
+    */
+    for (int r = 0; r < ROW; r++) {
+       for (int c = 0; c < COL; c++) {
+          matrix1[r][c] = rand() %50;
+          //matrix2[r][c] = rand() %50;
+       }
+    } //generate matrix 2
+    for (int r = 0; r < ROW; r++) {
+       for (int c = 0; c < COL; c++) {
+          //matrix1[r][c] = rand() %50;
+          matrix2[r][c] = rand() %50;
+       }
+    }
+    //cout << "Matrix1 is : ";
+    
+    
+    //cout << "Matrix2 is : ";
+    
+    double resultMatrix[ROW][COL] = {0};
+     // Add two matrices and print the result
+    addMatrix(matrix1, matrix2, resultMatrix);
+    cout << "The addition of the matrices is " << endl;
+    printResult(matrix1, matrix2, resultMatrix, '+');
+}
+
+/** The method for adding two matrices */
+ void addMatrix(double m1[ROW][COL], double m2[ROW][COL],double m3[ROW][COL] )
+  {
+
+     // code to add matrix1 and 2
+     /* Easiest option will be to use two For loops, one for tracking the row and the other for the column
+     have it be consistent with the row and column for all 3 arrays when adding together into m3
+     */
+     for (int r = 0; r < 3; r++) {
+        for (int c = 0; c < 3; c++) {
+           m3[r][c] = m1[r][c] + m2[r][c];
+        }
+     }
+
+
+  }
+
+ /** Print result - Follow this logic so that you have a proper display as in test cases*/
+   void printResult(double m1[ROW][COL], double m2[ROW][COL], double m3[ROW][COL], char op){
+        // code to display matrix1
+        /*My plan for this section is to have a loop for the rows, and then within loops for all 3 matrixes to
+        display the columns for all 3 together before moving on to the next row.
+        */
+      for (int i = 0; i < ROW; i++) {
+         for (int j = 0; j < COL; j++) {
+           cout << setw(4) << m1[i][j]; 
+         }
+         
+        if (i == ROW / 2)
+            cout <<  "  " << op <<  "  "  ;
+        else
+            cout <<  "     " ;
+
+      // code to display matrix2
+         for (int j = 0; j < COL; j++) {
+           cout << setw(4) << m2[i][j]; 
+         }
+          if (i == ROW / 2)
+            cout <<  "  =  " ;
+          else
+            cout <<  "     " ;
+      // code to display matrix3
+      for (int j = 0; j < COL; j++) {
+           cout << setw(4) << m3[i][j]; 
+         }
+       cout << endl;
+    }
+}
