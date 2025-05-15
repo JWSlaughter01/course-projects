@@ -1,0 +1,63 @@
+#include <iostream>
+using namespace std;
+#define SIZE 10
+
+void SelectionSort(int [], int size );
+int main()
+{
+   // Declare all the variables and arrays
+   int numberRec;
+   bool b = true;
+   
+   // input validation
+   //I wanted a majority of the code to be within the while loop so that there would be less redundancy
+   while (b){
+      cout << "How many elements? ";
+      cin >> numberRec;
+      if (numberRec < 1 || numberRec > 10) {
+         cout << endl;
+         cout << "The number of elements should be less than 11 and greater than 0" << endl;
+         continue; //next iteration of loop
+      }
+      
+      int numberList[numberRec];
+      int count = 0;
+      cout << "Enter the elements: ";
+      while (count < numberRec) {
+         cin >> numberList[count++];
+      }
+   
+   // Read data from  keyboard and populate arrays
+   
+   // call the selection sort function
+   // SelectionSort(numberList, numberRec);
+      SelectionSort(numberList, numberRec);
+    
+    // Display the sorted array
+    cout << "The sorted array is: ";
+    for (int i = 0; i < numberRec; i++) {
+       cout << numberList[i] << " ";
+    }
+    cout << endl;
+    
+    b = false;
+   }
+}
+
+void SelectionSort(int numbers[], int size)
+{
+   // body of the function
+   int minIndex, minValue;
+   for (int i = 0; i < (size -1); i++) {
+      minIndex = i;
+      minValue = numbers[i];
+      for (int index = i +1; index < size; index++) {
+         if (numbers[index] < minValue) {
+            minValue = numbers[index];
+            minIndex = index;
+         }
+         //accidentally had the swap fucntion in the nested loop..
+      }
+      swap(numbers[minIndex], numbers[i]);
+   }
+}
