@@ -1,0 +1,37 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 10/31/2024
+;Desc: Ch5 Assignment Exercise 2
+;return address
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+returnMess BYTE "Subroutine Return Address = ", 0	;starting
+newReturnMess BYTE "New Return Address = ", 0		;replacement
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+mov edx, OFFSET returnMess	;Irvine WriteString operand checks edx register
+call WriteString			;Should display "Subroutine Return Address ="
+mov eax, [esp]				;Irvine WriteHex operand checks eax register
+call WriteHex				;"Subroutine Return Address = 7671FCC9"
+call  Crlf					;next line in console
+;Subroutine's return address displayed, step 1 complete
+
+add eax, 3					;adds 3 bytes to return address
+mov edx, OFFSET newReturnMess
+call WriteString			;Should display "New Return Address = " in second line
+call WriteHex				;should add the previous address + 3 bytes
+
+
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
