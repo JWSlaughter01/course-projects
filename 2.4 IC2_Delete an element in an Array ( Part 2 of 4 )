@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    const int SIZE = 8;
+    int numbers[SIZE] = { 2, 3, 4, 5, 6, 7, 8, 9};
+    int index = 0, key ;
+
+    //cout << "Which element do you want to delete? ";
+    cin >> key;
+    //cout << endl;
+    bool keyFound = false;
+    
+    /*
+    
+    Enter code
+    
+    */
+    //for loop to check each position for key
+    for (int i = 0; i < SIZE; i++) {
+       if (numbers[i] == key) {
+          cout << key << " was found at index " << i << endl;
+          index = i;
+          keyFound = true;
+          break;
+       }
+    }
+    
+    if (keyFound) {
+       for (int i = index; i < SIZE -1; i++) {
+         numbers[i] = numbers[i+1];
+       }
+       //the array has a constant size, otherwise I would've considered initializing a new array with size-1
+       //and with everything but the deleted element added in the correct position
+       numbers[SIZE -1] = 0;
+       cout << "The new array is : ";
+       for (int i = 0; i < SIZE; i++) {
+          if (numbers[i] != 0) {
+             cout << numbers[i] << " " ;
+          }
+       }
+    } else {
+       cout << key << " was not found" << endl;
+    }
+
+}
