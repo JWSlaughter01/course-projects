@@ -1,0 +1,29 @@
+;Author: John Slaughter
+;Date: 10/07/2024
+;Desc: COCS 2325 Homework 4, code 3 0f 4 (short)
+;Carry Flag exercise
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+one BYTE 0FFh
+
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+mov eax, 0
+mov al, one
+add al, 1
+;mov bl, one ;throwaway
+
+
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
