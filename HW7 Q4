@@ -1,0 +1,44 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 11/25/2024
+;Desc: Ch7 SE3
+;shift instructions
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+val1 SDWORD -1
+val2 SDWORD -6
+val3 SDWORD 3
+mesV BYTE "val1 = ",0
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+
+;write assembly code here
+;C++ > v1 = (v2 / v3) * (v1 + v2)
+mov eax, val2
+cdq	;needed to check textbook for this
+mov ebx, val3
+idiv ebx	;w/o cdq instruction, I get an integer overflow
+;mov val2, eax	;val2 = -2
+mov ecx, eax	;I still val2 for addition...
+
+mov eax, val1
+add eax, val2
+mov val1, eax
+mov val2, ecx
+
+mov eax, val2
+mov ebx, val1
+imul ebx	;eax = 0000000E
+mov val1, eax	;val1 = 14
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
