@@ -1,0 +1,28 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 11/25/2024
+;Desc: Ch7 SE1
+;shift instructions
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+mov eax, 0	;clear
+mov ax, 0FFFCh	; eax = 0000FFFC
+mov bx, ax	;saving copy
+add ax, 3	;preparing for shift to upper half of eax
+shl eax, 16	;shift ax to upper half of eax
+mov ax, bx	;eax = FFFFFFFC
+
+call DumpRegs	;display registers
+
+INVOKE ExitProcess,0
+main ENDP
+END main
