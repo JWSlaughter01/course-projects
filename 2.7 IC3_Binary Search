@@ -1,0 +1,64 @@
+#include <iostream>
+
+using namespace std;
+
+//prototype
+int binarySearch(int list[], int key, int low, int high);
+
+// function main begins program execution
+int main()
+{
+    int list[] = { 2, 4, 7, 10, 11, 28, 34, 45, 50, 59, 60, 66, 69, 70, 75, 89, 95 };
+
+    int key, first = 0, last = 16;
+    cout <<"Enter the element to search: ";
+    cin >> key;
+    /*
+    Enter your code for the function call
+    if key is found output the following statement
+    cout << key <<  " is at index " << i << endl;
+    */
+    int i = binarySearch(list, key, first, last);
+    if (i != -1) {
+       cout << key <<  " is at index " << i << endl;
+    }
+
+
+}
+
+   // function definition
+  // Write your  Function header
+ int binarySearch(int list[], int key, int low, int high) {
+
+  // Write your code here and the two cout statements be inserted into your code wherever necessary
+   //cout << "It takes "<< count << " iterations to find the key " << key  << endl;
+   //cout << "After  "<< count << " iterations "<< key << " is not found!" << endl;
+   int first = 0,
+      last = 16,
+      middle,
+      count = 0,
+      position = -1;
+      
+   bool found = false;
+   
+   while (!found && first <= last) {
+      middle = (first + last) /2;
+      if (list[middle] == key) {
+         found = true;
+         position = middle;
+         count++;
+         cout << "It takes "<< count << " iterations to find the key " << key  << endl;
+      } else if (list[middle] > key) {
+         last = middle -1;
+         count++;
+      } else {
+         first = middle +1;
+         count++;
+      }
+   }
+      if (position == -1) {
+         cout << "After  "<< count << " iterations "<< key << " is not found!" << endl;
+      }
+      return position;  
+
+}
