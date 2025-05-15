@@ -1,0 +1,253 @@
+import java.util.*;
+    class SplayTree {
+        //implementing Node class
+        private class Node { 
+            int key; //the variable stored within the node
+            Node left; //pointer to left child node
+            Node right; //pointer to right child node
+            Node parent; //pointer to
+            
+            Node(int key) { //setting the key
+                this.key = key;
+                left = null;
+                right = null;
+                parent = null;
+            }
+        }
+    private Node root; //initializing root node
+        
+    private void splay(Node x) {
+        while(x.parent != null) { //while the node isn't the root node
+            if (x.parent.parent == null) { //if parent is the root node, only 1 operation can be done
+                //Zig
+                if (x.parent.left == x) { //if left node of parent, rotate right
+                    rightRotate(x.parent);
+                } else { //if right node of parent, rotate left
+                    leftRotate(x.parent);
+                }
+            } else if (x.parent.left == x && x.parent.parent.left == x.parent) {
+                //Zig-Zig
+                //left to right, left to right
+                rightRotate(x.parent.parent);
+                rightRotate(x.parent);
+            } else if (x.parent.right == x && x.parent.parent.right == x.parent) {
+                //Zig-Zig
+                //right to left, right to left
+                leftRotate(x.parent.parent);
+                leftRotate(x.parent);
+            } else if (x.parent.right == x && x.parent.parent.left == x.parent) {
+                //Zig-Zag
+                //right to left, left to right
+                leftRotate(x.parent);
+                rightRotate(x.parent);
+            } else {
+                //Zig-Zag
+                //left to right, right to left
+                rightRotate(x.parent);
+                leftRotate(x.parent);
+            }
+        }
+        root = x;
+    }
+    //rotate right method
+    private void rightRotate(Node x) {
+        Node y = x.left; //checking the left child of the node
+        if (y != null) {  //if one is present, move to the right
+            x.left = y.right;
+            if (y.right != null) { 
+                y.right.parent = x; //changing parent
+            }
+            y.parent = x.parent;
+        }
+        if (x.parent == null) { //if no parent, its the root
+            root = y;
+        } else if (x == x.parent.right) { 
+            x.parent.right = y; 
+        } else {
+            x.parent.left = y; 
+        }
+        if (y != null) {
+            y.right = x;
+        }
+        x.parent = y; //new parent
+    }
+
+    //method below should function very similar to the method above
+    //the mechanics behind a left rotation shouldn't be massively distinct from a right rotation
+    private void leftRotate(Node x) {
+        Node y = x.right;
+        if (y != null) {
+            x.right = y.left;
+            if (y.left != null) {
+                y.left.parent = x;
+            }
+            y.parent = x.parent;
+        }
+        if (x.parent == null) {
+            root = y;
+        } else if (x == x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+        if (y != null) {
+            y.left = x;
+        }
+        x.parent = y;
+    }
+    
+    //Should scan the tree, going left or right depending on how the key compares
+    //to the keys to each node, until an empty position is found...
+    //then the newly created node should be splayed to the root
+    public void splayInsert(int key){
+        Node z = root;
+        Node p = null; //pointer
+        //scan the tree
+        while (z != null) { //until empty position is found
+            p = z;
+            if (key < z.key) { //if less than current node, go left
+                z = z.left;
+            } else { //else go right
+                z = z.right;
+            }
+        }
+        Node newNode = new Node(key);
+        newNode.parent = p; //link new node to the parent
+        if (p == null) { //if no parent, it is the root
+            root = newNode;
+        } else if (key < p.key) { //if lower than parent, it goes to the left
+            p.left = newNode;
+        } else { //if not lower, it goes to the right
+            p.right = newNode;
+        }
+        splay(newNode); //splay after everything else
+    }
+    
+    //call the search function to locate the node to delete
+    public void splayDelete(int key){
+        Node x = nodeSearch(root, key);
+        Node nLeft;
+        if (x == null) { //if node was not located, end method early
+            return;
+        }
+        splay(x); //do necessary rotations
+        if (x.left == null) {
+            root = x.right;
+            if (root != null) {
+                root.parent = null;
+            }
+        } else {
+            nLeft = x.left;
+            nLeft.parent = null; 
+            while (nLeft.right != null) {
+                nLeft = nLeft.right;
+            }
+            splay(nLeft); //splay again
+            nLeft.right = x.right;
+            if (x.right != null) {
+                x.right.parent = nLeft;
+            }
+            root = nLeft;
+        }
+    }
+    
+    //search method for when requested by user
+    public boolean splaySearch(int key) {
+        Node x = nodeSearch(root, key); //call to the other search method
+        if (x != null) { //if present, splays the node
+            splay(x);
+            return true;
+        }
+        System.out.println("Not found");
+        return false;
+    }
+    
+    //search method for assisting with the delete method
+    //locates the node that needs to be deleted
+    private Node nodeSearch(Node root, int key) {
+        Node x = root;
+        while (x != null) {
+            if (key < x.key) {
+                x = x.left;
+            } else if (key > x.key) {
+                x = x.right;
+            } else {
+                return x;
+            }
+        }
+        return null;
+    }
+    
+    //printing from root to left to right
+    //recursively calling method until last node in each direction is found
+    public void preOrderTrav(Node x, String pos) {
+        if (x != null) {
+            if (pos != "Root") { //adds a comma at start of every loop *except* the first
+                System.out.print(", "); //this way prevents a comma after the last node
+            }
+            System.out.print(x.key + " " + pos);
+            preOrderTrav(x.left, "Left"); //first left
+            preOrderTrav(x.right, "Right"); //then right
+        }
+    }
+    
+    public void preOrderPrint() { //starting call
+        preOrderTrav(root, "Root");
+        System.out.println();
+    }
+
+    }
+    
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        SplayTree tree = new SplayTree();
+        System.out.print("How many starting numbers in the tree?");
+        int N = scanner.nextInt();
+        for (int i = 1; i <= N; i++) { //generating N nodes for tree
+            tree.splayInsert(i);
+            tree.preOrderPrint();
+        }
+        boolean l = true;
+        while (l) { //loop until exit is called
+            System.out.print("Do you wish to delete, insert, search, or exit? ");
+            String op = scanner.next();
+            int key = 0; //initializing key
+           switch(op) {
+                case "i": //insert
+                case "I":
+                case "insert":
+                case "Insert":
+                    System.out.println("Enter number to insert ");
+                    key = scanner.nextInt();
+                    tree.splayInsert(key);
+                    break;
+                case "d": //delete
+                case "D":
+                case "delete":
+                case "Delete":
+                    System.out.println("Enter number to delete ");
+                    key = scanner.nextInt();
+                    tree.splayDelete(key);
+                    break;
+                case "s": //search
+                case "S":
+                case "search":
+                case "Search":
+                    System.out.println("Enter number to search ");
+                    key = scanner.nextInt();
+                    tree.splaySearch(key);
+                    break;
+                case "e": //exit
+                case "E":
+                case "exit":
+                case "Exit":
+                    System.out.println("Exiting ");
+                    l = false;
+                    break;
+           }
+            tree.preOrderPrint();
+        }
+        scanner.close();
+    }
+}
