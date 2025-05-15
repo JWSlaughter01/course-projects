@@ -1,0 +1,81 @@
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+#define SIZE 100
+
+void SelectionSort(int [], int size );
+//void SelectionSort(int numbers[], int numbersSize);
+int main()
+{
+    int numberList[SIZE];
+    int numberRec;
+
+    cout << "How many elements? " ;
+    cin >> numberRec;
+
+    // input validation
+    while(numberRec <= 0 || numberRec > SIZE) //input your code)
+    {
+        cout << "The number of elements should be less than " << SIZE+1 << " or greater than 0" << endl;
+        //input your code
+        cout << "How many elements? ";
+        cin >> numberRec;
+        cout << endl;
+
+    }
+    int seed;
+    cout << "Enter a seed value: ";
+    cin >> seed;
+    srand(seed);
+    cout << "The array after populating value is: " << endl;
+// Read data from  keyboard and populate arrays
+
+    for(int i = 0; i < numberRec; i++) //input your code)
+    {
+         numberList[i] = (rand()%50);
+         cout << setw(3) <<  numberList[i];
+    }
+    cout << endl;
+    // call the selection sort function
+    SelectionSort(numberList, numberRec);
+
+    // Display the sorted array
+    cout << "The sorted array is : " << endl;
+    for (int i = 0; i < numberRec; i++) {
+       cout << setw(3) << numberList[i];
+    }
+    cout << endl;
+    
+    //input your code
+    return 0;
+}
+
+void SelectionSort(int numbers[], int size)
+{
+    int i;
+    int j;
+
+    for (int k = 0; k < size - 1; k++)//input your code)
+    {
+        //Keep index of the current min and corresponding element as min
+        i = k;
+        
+
+        // Find index of smallest remaining element, current MinIndex
+        for (j = k +1; j < size; j++)//input your code)
+        {
+            if (numbers[j] < numbers[i]) {
+               i = j;
+            }
+        }
+
+        //Swapping if necessary
+        //input your code
+        if (i != k) {
+           swap(numbers[i], numbers[k]);
+        }
+
+    }
+}
