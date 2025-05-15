@@ -1,0 +1,31 @@
+;Author: John Slaughter
+;Date: 9/28/2024
+;Desc: COCS 2325 Homework 3, code 1 0f 4
+;AddTwo
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+valA	DWORD 4
+valB	DWORD 3
+valC	DWORD 2
+valD	DWORD 1
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+mov eax, valA
+mov ebx, valB
+mov ecx, valC
+mov edx, valD
+add eax, ebx
+add ecx, edx
+sub eax, ecx
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
