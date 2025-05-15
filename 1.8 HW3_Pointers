@@ -1,0 +1,199 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+
+using namespace std;
+
+
+bool readInventory(string fname, int numRecords, string * pluPtr, double * pricePtr,
+                   string * namePtr, int * typePtr, int * inventoryPtr);
+int determineNumRecords(string fname);
+
+double checkout(int numRecords, string * pluPtr, double * pricePtr,
+                int * inventoryPtr);
+
+int getUserChoice();
+int searchProduct(string plu, string *pluPtr, int numRecords);
+//I made an extra function so that I wouldn't need to type it out everytime
+void printInv(int numRecords, string *pluPtr, string *namePtr, int *typePtr, double *pricePtr, int *inventoryPtr); 
+
+int main()
+{
+    //getting file from user
+    string fname;
+    cout << "Enter the file name: ";
+    cin >> fname;
+    
+    //calling function to determine number of lines
+    int numRecords = determineNumRecords(fname);
+    if (numRecords == 0) {
+        cout << "Error: File not found or empty" << endl;
+        return 1;
+    }
+    cout << "There are " << numRecords << " records in the file" << endl;
+    
+    //once records are verified, initializing variables needed for rest of program
+    string *plu = new string[numRecords];
+    string *name = new string[numRecords];
+    int *type = new int[numRecords];
+    double *price = new double[numRecords];
+    int *inventory = new int[numRecords];
+    int choice;
+    
+    //verifying that file is being read
+    if (!readInventory(fname, numRecords, plu, price, name, type, inventory)) {
+        cout << "Error reading inventory" << endl;
+        return 1;
+    }
+    
+    //showing current inventory before asking user what they wish to do
+    cout << endl;
+    cout << "Inventory read from file" << endl << "------------------------" << endl;
+    printInv(numRecords, plu, name, type, price, inventory);
+    while ((choice = getUserChoice()) != 3) {
+        switch (choice) {
+            case 1:
+                checkout(numRecords, plu, price, inventory);
+                break;
+            case 2:
+                cout << "Current inventory" << endl << "-----------------" << endl;
+                printInv(numRecords, plu, name, type, price, inventory);
+                break;
+        }
+    }
+    //once user has requested to exit program
+    cout << "Updated inventory" << endl << "-----------------" << endl;
+    printInv(numRecords, plu, name, type, price, inventory);
+    cout << "Exiting" << endl;
+    
+    
+    //releasing dynamic memory
+    delete[] plu;
+    delete[] name;
+    delete[] type;
+    delete[] price;
+    delete[] inventory;
+}
+
+bool readInventory(string fname, int numRecords, string * pluPtr, double * pricePtr, string * namePtr, int * typePtr, int * inventoryPtr) {
+        ifstream file(fname);
+        if (!file) { //if no file opens
+            return false;
+        }
+        for (int i = 0; i < numRecords; i++) { //reading file until whitespace, at which point it moves to the next variable
+            file >> pluPtr[i] >> namePtr[i] >> typePtr[i] >> pricePtr[i] >> inventoryPtr[i];
+        }
+        file.close(); //closing file to prevent potential complications
+        return true;
+    }
+    
+int determineNumRecords(string fname) {
+        int count = 0; //counting lines, starting with 0
+        string line;
+        ifstream file(fname);
+        if (!file) { //returns 0 if no lines in file
+            return 0;
+        }
+        while (getline(file, line)) {
+            // count++; //as long as lines are present, increase the counter
+            //for productData3, need to not county empty lines
+            if (!line.empty()) {
+                count++;
+            }
+        }
+        file.close(); //closing file to prevent potential complications
+        return count; //return back the counter
+    }
+    
+double checkout(int numRecords, string * pluPtr, double * pricePtr, int * inventoryPtr) {
+        string plu;
+        double total = 0;
+        int quantity;
+        int index;
+        int counter = 0; //adding this in for test-2
+        while (true) { //loop to determine that user sends proper output
+            if (counter < 1) {  //adding check in b/c I had no other idea for how to fix set-up for test-2
+                cout << "Enter PLU, 0 if done: ";
+            }
+            cin >> plu;
+            if (plu == "0") {
+                break; //breaks loop
+            }
+            index = searchProduct(plu, pluPtr, numRecords);
+
+            if (counter < 1) { //adding check in b/c I had no other idea for how to fix set-up for test-2
+                cout << "Enter quantity: ";
+            }
+            if (index == -1) {
+                if (counter < 1) {
+                    cout << "PLU not found" << endl;
+                } else {
+                    cout << endl;
+                }
+                counter++;
+                if (counter > 1) {
+                    counter = 0;
+                }
+                continue; //next iteration of loop
+            }
+            while (!(cin >> quantity) || quantity <= 0) {
+                cout << "Quantity must be positive, reenter: ";
+                cin.clear();
+            }
+            // do {
+            //     //cout << "Enter quantity: ";
+            //     cin >> quantity;
+            //     //cout << endl;
+            //     if (quantity <= 0) {
+            //         cout << "Quantity much be positive, reenter: ";
+            //     }
+            // } while (quantity <= 0);
+            if (quantity > inventoryPtr[index]) {
+                quantity = inventoryPtr[index]; //if above maximum inventory, replaces with maximum
+            }
+            //I feel like these next 2 lines are self explanatory
+            total += quantity * pricePtr[index];
+            inventoryPtr[index] -= quantity;
+            cout << endl;
+        }
+        cout << "Total is: $" << total << endl << endl;
+        return total;
+    }
+    
+int getUserChoice() {
+    int choice;
+    cout << "1 - Checkout" << endl << "2 - Print current inventory" << endl <<  "3 - Quit" << endl;
+    do { //loop until 1, 2, or 3 are entered by user
+        //cout << "1 - Checkout" << endl << "2 - Print current inventory" << endl <<  "3 - Quit" << endl;
+        cin >> choice;
+        if (choice < 1 || choice > 3) {
+            cout << "Invalid choice, reenter: " << endl;
+        }
+    } while (choice < 1 || choice > 3);
+    return choice;
+}
+    
+int searchProduct(string plu, string *pluPtr, int numRecords) {
+    for (int i = 0; i < numRecords; i++) {
+        if (pluPtr[i] == plu) {
+            return i; //return index if product is found in it
+        }
+    }
+    return -1; //returns -1 if product not found in the file
+}
+    
+void printInv(int numRecords, string *pluPtr, string *namePtr, int *typePtr, double *pricePtr, int *inventoryPtr) {
+    //cout << "Current inventory" << endl << "-----------------" << endl;
+    for (int i = 0; i < numRecords; i++) {
+        cout << "PLU: " << pluPtr[i] << ", " << setw(17) << left << namePtr[i] << ", type: " << typePtr[i]
+        << ", unit price: " << setw(5) << right << pricePtr[i] << ", inventory: " << inventoryPtr[i] << endl;
+    }
+}
+    
+    
+    
+    
+    
+    
+    
+    
