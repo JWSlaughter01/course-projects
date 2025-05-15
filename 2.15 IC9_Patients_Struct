@@ -1,0 +1,79 @@
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+#define INFONUM 255
+
+// patients structure definition
+struct Patients {
+   int ID;
+   string FName;
+   string LName;
+   int vitals[3]; // BPU, BPL, Pulse
+    // fields
+};
+
+int main()
+{
+   //open the input file for reading.
+   string filename;
+   cout << "Enter filename: ";
+   cin >> filename;
+   cout << endl;
+   
+   //open
+   ifstream file(filename);
+   
+   if (!file) {
+      cout << "Could not open file" << endl;
+      cout << "Exiting" << endl;
+      return 1;
+   }
+   
+    //Dynamically create Patients array
+    int numPat = 0;
+    string line;
+    while (getline(file, line)) {
+       numPat++;
+    }
+    
+    file.clear();
+    file.seekg(0);
+    
+    Patients *patArr = new Patients[numPat];
+    
+    // Read the header line and parse using istringstream Use setw(10) for First and last name.
+    //Setw(4) for  for ID and other vitals
+
+    
+    // Read the values into array of structures
+    int i = 0;
+    while (getline(file, line)) {
+       istringstream iss(line);
+       iss >> patArr[i].ID >> patArr[i].FName >> patArr[i].LName >> patArr[i].vitals[0] >> patArr[i].vitals[1] >> patArr[i].vitals[2];
+       i++;
+    }
+    
+    // Display the values
+    //Use setw(10) for First and last name, Setw(4) for ID and other vitals
+      cout << setw(4) << left << "ID" << setw(10) << left << "FN" << setw(10) << left << "LN" << setw(4) << "BPU"
+      << setw(4) << left << "BPL" << setw(4) << left << "Pulse" << endl;
+      
+      for (int i = 1; i < numPat; i++) {
+         cout << setw(4) << left << patArr[i].ID << setw(10) << left << patArr[i].FName << setw(10) 
+         << left << patArr[i].LName << setw(4) << patArr[i].vitals[0] << setw(4) << left 
+         << patArr[i].vitals[1] << setw(4) << left << patArr[i].vitals[2] << endl;
+      }
+    
+    //close the file
+    file.close();
+    
+    //delete the pointer
+    delete[] patArr;
+}//end of main
+
+//patientsinfo.txt
