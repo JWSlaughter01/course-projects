@@ -1,0 +1,51 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 12/05/2024
+;Desc: Ch8 Short Exercise 2
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+messs1 BYTE "White on a blue background ",0
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+
+;write assembly code here
+;mov   eax,white + (blue * 16)
+;call  SetTextColor
+;textbook example for white on blue background
+;lets go with that 
+;mov eax, 15 +(1 * 16)
+;call  SetTextColor
+;mov edx, offset messs1
+;call WriteString
+;eax = 0000001Fh
+mov eax, 0
+push 01h
+push 0FH
+call SetColor
+
+mov edx, OFFSET messs1	;eax = 0000101F
+call WriteString
+call Crlf
+
+INVOKE ExitProcess,0
+main ENDP
+
+SetColor PROC
+mov al, [esp +4]
+mov ah, [esp +8]
+shl ah, 4	;ah = 10 after this
+or al, ah	;eax = 0000101F
+mov ah, 0	;eax = 0000001F, exact same as textbook command gives
+call SetTextColor
+
+
+ret
+SetColor ENDP
+
+END main
