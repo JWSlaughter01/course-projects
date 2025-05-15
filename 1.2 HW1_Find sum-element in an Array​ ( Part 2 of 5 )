@@ -1,0 +1,59 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int n;
+    cin >> n;
+    //variables sum, arr[], and index
+    int sum = 0;
+    int arr[n];
+    int index = -1; //an impossible index for an array and thus used as the default
+    //if no sum is found, the index will stay here
+    //cout << n;
+    /*the objective of this first loop is to input each int into each position of the array
+    and to add each int into the sum, so that there is a cumulative counter
+    */ 
+    for (int i = 0; i < n; i++) {
+       cin >> arr[i];
+       sum += arr[i];
+    }
+    
+    /*my first iteration of this code was written under the premise that there was no neg ints
+    under that premise, my objective was to check for a highest number and test if that was = the sum of the rest
+    since that didn't work, a different method was required.
+    
+    Under this iteration, each position in the array is removed from the cumulative sum of the total of all
+    ints added into the array and is then tested to see if it is = to the new sum. If yes, it and its index
+    are recorded and treated as the sum.
+    */
+    int tempSum;
+    for (int i = 0; i < n; i++) {
+       tempSum = sum - arr[i];
+       if (tempSum == arr[i]) {
+          index = i;
+          break;
+       }
+    }
+    
+    if (index == -1) { //if index was never changed from impossible default, then there was no sum found
+       cout << "No index has the sum" << endl;
+    } else { //if index was anything different, then a sum was found
+       cout << "Index " << index << " has the sum" << endl;
+    }
+    
+
+    // Enter your code
+    // Get the size of the array from the user
+    
+    // Get the elements of the array from the user
+    
+    // Find out the element with the sum
+     
+      // If index is found with the sum
+        //cout << "Index " << i << " has the sum" << endl;     
+       // If no index is found with the sum
+        //cout << "No index has the sum" << endl;
+
+    return 0;
+}
