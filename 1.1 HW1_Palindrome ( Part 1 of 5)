@@ -1,0 +1,55 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+bool isPalindrome(string str)
+{
+    // Initialize left and right indices
+    // Enter your code here
+    /* Objective: compare each position with its corresponding end point/starting point
+      Have a For loop for half of the length of the string and act like it is a char array
+      start by checking the first position and the last position, if they are the same then continue
+      if they are not the same, then break b/c it is not a Palindrome
+      i = 0 and end = length-1, with each iteration of the check, i++ and end-- until they meet in the middle.
+    */
+   int length = str.length(); //gathering string length
+   int end = length -1; //setting endpoint pointer
+   for (int i = 0; i < length/2; i++) {
+      //I wasn't sure if the tolower function was desired, so I included it just in case it was
+      if (tolower(str[i]) != tolower(str[end])) {
+         return false;  //if the two points aren't a match, return false
+      }
+      end--;
+   }
+   return true; //if it makes it to the end of the loop w/0 a return false, then return true
+}
+
+
+int main()
+{
+    string str;
+
+    cout << "Enter the name of the string: ";
+
+    cin >> str;
+    //call isPalindrome function and set the return for a boolean variable
+    bool PaliQues = isPalindrome(str);
+    
+    //if return true, output the string associated with "it is a palindrome"
+    if (PaliQues == true) {
+       cout << "The given string is a palindrome. \n";
+    } else { //if not, state that it is NOT
+       cout << "The given string is not a palindrome. \n";
+    }
+    
+    // check if the string is palindrome or not
+    
+    /*
+    Enter your code
+        cout << "The given string is a palindrome. \n";
+
+        cout << "The given string is a palindrome. \n";
+        
+        */
+}
