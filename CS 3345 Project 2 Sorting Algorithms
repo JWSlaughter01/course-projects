@@ -1,0 +1,354 @@
+import java.util.Arrays;
+import java.util.Random;
+
+
+public class Main
+{
+    //global variables for tracking the time in both sorting functions and easy accessibility in all of the various functions
+    static long start;
+    static long end;
+    private static final int cutOff = 15;
+    static int index = 0;
+    private static String sort = "Merge"; //string for keeping track of which test is currently being done
+    //2 double arrays for tracking the timings for each test
+    static double[] mergeTimings = new double[15];
+    static double[] quickTimings = new double[15];
+    //arrays for keeping track of the size of each array and whether they are "almost" sorted or not
+    private static final int[] arrN = {8, 8, 20, 100, 500, 500, 1000, 5000, 5000, 10000, 100000, 100000, 1000000, 1000000};
+    private static final int[] alm = {0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
+    
+	public static void main(String[] args) {
+	    //initial testing array, needs its entire order reversed
+	    //3 pre-generated initial tests to check
+	    //first test needs to be reversed entirely, other 2 are very close to being sorted
+	    System.out.println("****** INITIAL ARRAY ******");
+	    System.out.println("8, 7, 6, 5, 4, 3, 2, 1");
+	    System.out.println("========================");
+		int[] arrr = {8, 7, 6, 5, 4, 3, 2, 1};
+		int[] arrrC = copyArr(arrr);
+		mergeSortInitializer(arrr, 0, arrr.length - 1);
+		//output is [1, 2, 3, 4, 5, 6, 7, 8]
+		printStats(arrr);
+		quickSortInitializer(arrrC, 0, arrrC.length - 1);
+        printStats(arrrC);
+		System.out.println("****** INITIAL ARRAY COMPLETED ******");
+		System.out.println("========================");
+		System.out.println("****** INITIAL ARRAY ******");
+	    System.out.println("1, 3, 2, 4, 5, 6, 7, 8");
+	    System.out.println("========================");
+		int[] arrr1 = {1, 3, 2, 4, 5, 6, 7, 8};
+		int[] arrr1C = copyArr(arrr1);
+		mergeSortInitializer(arrr1, 0, arrr1.length - 1);
+		printStats(arrr1);
+		quickSortInitializer(arrr1C, 0, arrr1C.length - 1);
+        printStats(arrr1C);
+	    System.out.println("****** INITIAL ARRAY ******");
+	    System.out.println("1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 10, 12, 13, 14, 15, 17, 16, 18, 19, 20");
+	    System.out.println("========================");
+		int[] arrr2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 10, 12, 13, 14, 15, 17, 16, 18, 19, 20};
+		int[] arrr2C = copyArr(arrr2);
+		mergeSortInitializer(arrr2, 0, arrr2.length - 1);
+		printStats(arrr2);
+		quickSortInitializer(arrr2C, 0, arrr2C.length - 1);
+        printStats(arrr2C);
+		
+		//run a variety of randomly generated tests, 3 are set to be almsot fully sorted before checking runtimes
+		//increasing array sizes, so that how both scale can be observed
+		//from 100 to 1,000,000
+		testSorts(100);
+		testSorts(500);
+		mergeAlmost(500);
+		testSorts(1000);
+		testSorts(5000);
+		mergeAlmost(5000);
+		testSorts(10000);
+		testSorts(100000);
+		mergeAlmost(100000);
+		testSorts(1000000);
+		testSorts(1000000);
+		
+		//run end of program summary function
+		summary();
+	}
+	
+	//job of function is to call a bunch of functions for running tests with arrays
+	//n is given, which sets the length of the arrays
+	//sends array to a function with the job of assigning random numbers to each position within the array
+	//copies array. Sends original to mergesort function, copy to quickSort
+	//send data to print function
+	public static void testSorts(int n) { 
+	    System.out.println("****** Random distribution test: " + (index + 1) + " ******");
+	    System.out.println("========================");
+	    int[] arr = new int[n];
+	    randDistArr(arr);
+	    int[] arrCopy = copyArr(arr);
+	    mergeSortInitializer(arr, 0, arr.length - 1);
+        printStats(arr);
+        //sort = "Quick";
+        quickSortInitializer(arrCopy, 0, arrCopy.length - 1);
+        printStats(arrCopy);
+        System.out.println("========================");
+	}
+	
+	//goal with this function is to sort the entire array, then swap 2 variables to be resorted in new tests.
+	//very similar to the function above, with the minor difference of wanting it to be "almost" sorted prior to testing
+	public static void mergeAlmost(int n) {
+	    //sort before copying and stuff..
+	    System.out.println("****** Almost fully sorted test: " + index + " ******");
+	    System.out.println("========================");
+	    int[] arr = new int[n];
+	    randDistArr(arr);
+	    mergeSortInitializer(arr, 0, arr.length - 1);
+        //swap, goal is to have it *almost* fully sorted
+        swap(arr, arr.length - 3, arr.length - 1);
+        int[] arrCopy = copyArr(arr);
+        mergeSortInitializer(arr, 0, arr.length - 1);
+        printStats(arr);
+        quickSortInitializer(arrCopy, 0, arrCopy.length - 1);
+        printStats(arrCopy);
+        System.out.println("========================");
+	}
+	
+	//initializer function so that the start and end time tracker can be placed cleanly
+	public static void mergeSortInitializer(int[] arr, int left, int right) {
+	    start = System.nanoTime();
+	    mergeSort(arr, left, right);
+	    end = System.nanoTime();
+	}
+	
+	//mergesort function, I tried to model it after the exam provided in the class materials
+	public static void mergeSort(int[] arr, int left, int right) {
+	    if (left < right) {
+	        int center = (left + right) / 2;
+	        mergeSort(arr, left, center);
+	        mergeSort(arr, center + 1, right);
+	        merge(arr, left, center + 1, right);
+	    }
+	}
+	//mergesort function, I tried to model it after the exam provided in the class materials
+	public static void merge(int[] arr, int left, int center, int right) {
+	    int[] temp = new int[right - left + 1];
+	    int i = left;
+	    int j = center;
+	    int k = 0;
+	    
+	    while (i <= center - 1 && j <= right) {
+	        if (arr[i] <= arr[j]) {
+	            temp[k++] = arr[i++];
+	        } else {
+	            temp[k++] = arr[j++];
+	        }
+	    }
+	    
+	    while (i <= center - 1) {
+	        temp[k++] = arr[i++];
+	    }
+	    
+	    while (j <= right) {
+	        temp[k++] = arr[j++];
+	    }
+	    
+	    for (int o = 0; o < temp.length; o++) {
+	        arr[left + o] = temp[o];
+	    }
+	}
+	//extra function so that I can have the time functions working properly...
+	public static void quickSortInitializer(int[] arr, int left, int right) {
+	    start = System.nanoTime();
+	    quickSort(arr, left, right);
+	    end = System.nanoTime();
+	}
+	
+	//quicksort function. I tried to model if off of the class notes, but implemented it slightly different
+	public static void quickSort(int[] arr, int left, int right) {
+	    if (right - left + 1 <= cutOff) {
+	        insertionSort(arr, left, right);
+	        return;
+	    }
+	    
+	    int pivot = medianOfThree(arr, left, right);
+	    int i = left + 1;
+	    int j = right - 2;
+	    
+	    while (i <= j) {
+	        while (arr[i] < pivot) {
+	            i++;
+	        }
+	        while (arr[j] > pivot) {
+	            j--;
+	        }
+	        
+	        if (i <= j) {
+	            swap(arr, i, j);
+	            i++;
+	            j--;
+	        }
+	    }
+	    
+	    swap(arr, i, right - 1);
+	    
+	    quickSort(arr, left, j);
+	    quickSort(arr, i + 1, right);
+	}
+	//median of 3 function, tried to model off of class material as reference
+	private static int medianOfThree(int[] arr, int left, int right) {
+	    int center = (left + right) / 2;
+	    
+	    if (arr[left] > arr[center]) {
+	        swap(arr, left, center);
+	    }
+	    if (arr[left] > arr[right]) {
+	        swap(arr, left, right);
+	    }
+	    if (arr[center] > arr[right]) {
+	        swap(arr, center, right);
+	    }
+	    swap(arr, center, right - 1);
+	    return arr[right - 1];
+	    
+	}
+	//insertion sort algorithm
+	private static void insertionSort(int[] arr, int left, int right) {
+	    for (int i = left + 1; i <= right; i++) {
+	        int key = arr[i];
+	        int j = i - 1;
+	        while (j >= left && arr[j] > key) {
+	            arr[j + 1] = arr[j];
+	            j--;
+	        }
+	        
+	        arr[j + 1] = key;
+	    }
+	}
+	//swap function
+	private static void swap(int[] arr, int left, int right) {
+	    int temp = arr[left];
+	    arr[left] = arr[right];
+	    arr[right] = temp;
+	}
+    
+    //function to print info relating to each Test
+    //then calls a second stats function to record the data.
+    public static void printStats(int[] arr) {
+        System.out.println("Sorting type: " + sort + "sort");
+        //it takes up too much console space if I don't....
+        if (arr.length <= 100) {
+            System.out.println(Arrays.toString(arr));
+        }
+		System.out.println("Time taken: " + (((double)end - start)/1000) + " microseconds");
+		afterStats();
+    }
+    
+    //stats function for recording data, such as the runtime for each sort
+    private static void afterStats() {
+        if (sort == "Quick") {
+            quickTimings[index] = (((double)end - start)/1000);
+            sort = "Merge";
+            index++;
+        } else if (sort == "Merge") {
+            mergeTimings[index] = (((double)end - start)/1000);
+            sort = "Quick";
+        }
+    }
+    
+    //function for comparing run times for each test, pulling from the records for each.
+    //also checks how the "almost" sorted tests performed
+    private static void summary() {
+        int counter = 0;
+        int almCount = 0;
+        int belK = 0; //wanting to be able to see if there is a difference in small datasets
+        int aboTenK = 0; //for checking for specifically with large datasets
+        for (int i = 0; i < index; i++) {
+            System.out.println("======================");
+            System.out.println("*** Test " + (i + 1) + " ***");
+            System.out.println("*** Sorting: " + arrN[i] + " variables ***");
+            System.out.println("*** Quicksort time: " + quickTimings[i] + " microseconds ***");
+            System.out.println("*** Mergesort time: " + mergeTimings[i] + " microseconds ***");
+            
+            if(mergeTimings[i] > quickTimings[i]) {
+                System.out.println("*** Quicksort was faster for this test ***");
+                counter++;
+                System.out.println("*** Quicksort was completed in " + ((mergeTimings[i] - quickTimings[i])) + " microseconds earlier than Mergesort ***");
+                System.out.println("*** Mergesort was completed in " + ((mergeTimings[i] / quickTimings[i])) + "x the time that Quicksort was ***");
+                
+                if (alm[i] == 1) {
+                    almCount++;
+                    System.out.println("*** This test was almost-sorted ***");
+                } else {
+                    System.out.println("*** This test was NOT almost-sorted ***");
+                }
+                
+                if (arrN[i] < 1000) {
+                   belK++; 
+                } else if (arrN[i] > 10000) {
+                    aboTenK++;
+                }
+            } else {
+                System.out.println("*** Mergesort was faster for this test ***");
+                counter--;
+                System.out.println("*** Mergesort was completed in " + ((quickTimings[i] - mergeTimings[i])) + " microseconds earlier than Quicksort ***");
+                System.out.println("*** Quicksort was completed in " + ((quickTimings[i] / mergeTimings[i])) + "x the time that Mergesort was ***");
+                
+                if (alm[i] == 1) {
+                    almCount--;
+                    System.out.println("*** This test was almost-sorted ***");
+                } else {
+                    System.out.println("*** This test was NOT almost-sorted ***");
+                }
+                
+                if (arrN[i] < 1000) {
+                    belK--; 
+                } else if (arrN[i] > 10000) {
+                    aboTenK--;
+                }
+            }
+        }
+        System.out.println("======================");
+        if(counter > 0) {
+            System.out.println("*** Quicksort was faster than Mergesort for a majority of tests ***");
+        } else if (counter < 0) {
+            System.out.println("*** Mergesort was faster than Quicksort for a majority of tests ***");
+        } else {
+            System.out.println("*** Both sorting algorithms were faster than one another for an equal number of tests ***");
+        }
+        
+        if(belK > 0) {
+            System.out.println("*** Quicksort was faster than Mergesort for a majority of tests with under 1,000 variables ***");
+        } else if (belK < 0) {
+            System.out.println("*** Mergesort was faster than Quicksort for a majority of tests with under 1,000 variables ***");
+        } else {
+            System.out.println("*** Both sorting algorithms were faster than one another for an equal number of tests with under 1,000 variables ***");
+        }
+        
+        if(aboTenK > 0) {
+            System.out.println("*** Quicksort was faster than Mergesort for a majority of tests with over 10,000 variables ***");
+        } else if (aboTenK < 0) {
+            System.out.println("*** Mergesort was faster than Quicksort for a majority of tests with over 10,000 variables ***");
+        } else {
+            System.out.println("*** Both sorting algorithms were faster than one another for an equal number of tests with over 10,000 variables ***");
+        }
+        
+        System.out.println("======================");
+        System.out.println("*** Checking specifically Almost-Sorted sequences ***");
+        if (almCount > 0) {
+            System.out.println("*** Quicksort was faster than Mergesort for a majority of tests involving almost-sorted sequences ***");
+        } else if (almCount < 0) {
+            System.out.println("*** Mergesort was faster than Quicksort for a majority of tests involving almost-sorted sequences ***");
+        } else {
+            System.out.println("*** Both sorting algorithms were faster than one another for an equal number of tests involving almost-sorted sequences ***");
+        }
+    }
+    
+    //copies the array into a second for use in quickSort
+    //objective is to be able to test both the quicksort and mergesort features against the same array
+    public static int[] copyArr(int[] arr) {
+        return Arrays.copyOf(arr, arr.length);
+    }
+    
+    //uses Java's random functions to randomly distribute the array for testing
+    public static void randDistArr(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = (int)(Math.random() * (5 * arr.length));
+        }
+    }
+}
