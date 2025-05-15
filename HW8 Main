@@ -1,0 +1,159 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 12/05/2024
+;Desc: Ch8 Main Program
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+MF BYTE "Three consecutive 3s found ", 0
+MNF BYTE "Three consecutive 3s NOT found ", 0
+array1 DWORD 1, 2, 3, 3, 3, 4, 5	;size = 7	should be a yes
+array2 DWORD 3, 3, 2, 3, 3, 4		;size = 6	should be a no
+array3 DWORD 1, 2, 3, 4, 5			;size = 5	should be a no
+array4 DWORD 3, 3, 3, 3, 3			;size = 5	should be a yes
+
+
+
+FindThrees PROTO ;I know that the assignment wanted me adding stuff here, but I honestly don't know how to make the debugger happy..
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+;first array
+lea esi, array1
+mov ecx, 7
+push ecx
+push esi
+call FindThrees
+;add esp, 8
+
+cmp eax, 1
+je f1
+call FoundN3
+jmp next1
+
+f1:
+call Found3
+
+next1:	;second array
+lea esi, array2
+mov ecx, 6
+push ecx
+push esi
+call FindThrees
+;add esp, 8
+
+cmp eax, 1
+je f2
+call FoundN3
+jmp next2
+
+f2:
+call Found3
+
+next2:	;third array
+lea esi, array3
+mov ecx, 5
+push ecx
+push esi
+call FindThrees
+;add esp, 8
+
+cmp eax, 1
+je f3
+call FoundN3
+jmp next3
+
+f3:
+call Found3
+
+next3:	;fourth array
+lea esi, array4
+mov ecx, 5
+push ecx
+push esi
+call FindThrees
+;add esp, 8
+
+cmp eax, 1
+je f4
+call FoundN3
+jmp nee ;w/o this there is an unnedded 5th line
+
+f4:
+call Found3
+
+nee:
+
+
+INVOKE ExitProcess,0
+main ENDP
+
+FindThrees PROC
+push ebp
+mov ebp, esp
+push esi
+push ecx
+push edx
+
+mov esi, [ebp +8]
+mov ecx, [ebp +12]
+
+cmp ecx, 3
+jl NF
+
+mov edx, 0
+
+checkL:
+mov eax, [esi]
+cmp eax, 3	;is eax = 3?
+jne resetC	;if not, check next
+
+inc edx	;if yes, increase counter
+cmp edx, 3	;is counter at 3 3's in a row?
+je found
+jmp nextI	;skip reset of counter
+
+resetC:
+mov edx, 0
+
+nextI:
+add esi, 4	;moving pointer by one position every loop
+loop checkL
+
+NF:	;not found
+mov eax, 0
+pop edx
+pop ecx
+pop esi
+pop ebp
+ret
+
+found:
+mov eax, 1
+pop edx
+pop ecx
+pop esi
+pop ebp
+ret
+FindThrees ENDP
+
+Found3 PROC	;I decided to make these extra procedures instead of manually adding this every time
+mov edx, OFFSET MF
+call WriteString
+call Crlf
+ret
+Found3 ENDP
+
+FoundN3 PROC
+mov edx, OFFSET MNF
+call WriteString
+call Crlf
+ret
+FoundN3 ENDP
+
+END main
