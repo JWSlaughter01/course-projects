@@ -1,0 +1,29 @@
+;Author: John Slaughter
+;Date: 9/28/2024
+;Desc: COCS 2325 Homework 3, code 2 0f 4
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+sun = 0		;exercise example in ppt Ch3
+mon = 1
+tue = 2
+wed = 3
+thu = 4
+fri = 5
+sat = 6
+warray BYTE sun, mon, tue, wed, thu, fri, sat
+
+
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
