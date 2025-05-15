@@ -1,0 +1,35 @@
+INCLUDE Irvine32.inc
+;Author: John Slaughter
+;Date: 10/31/2024
+;Desc: Ch5 Assignment Exercise 1
+;PUSH and POP
+.386
+.model flat,stdcall
+.stack 4096
+
+.data
+
+ExitProcess proto, dwExitCode:dword
+.code
+main PROC
+
+;write assembly code here
+mov eax, 1	;EAX = 00000001
+mov ebx, 2	;EBX = 00000002
+call DumpRegs ;display registers
+
+;push eax and ebx
+push eax
+push ebx
+
+;pop with LIFO in mind
+pop eax
+pop ebx
+call DumpRegs ;display registers
+
+
+
+
+INVOKE ExitProcess,0
+main ENDP
+END main
