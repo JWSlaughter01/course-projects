@@ -1,0 +1,24 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string s;
+   string toEnd; //placeholder string
+   int k;
+   
+   /* Premise is simple, take the first part (up to k) and put it into a placeholder and remove from string
+   Then, use += operation to add back to the end of thr string
+   */
+   cin >> s;
+   cin >> k;
+   //cout << s;
+   //cout << k;
+   toEnd = s.substr(0, k);
+   s.erase(0, k);
+   s += toEnd;
+   
+   cout << s;
+   
+   
+}
