@@ -7,9 +7,9 @@
   Add your open source license, GitHub uses MIT license.
 -->
 
-# GitHub Pages
+# Computer Organization
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+_This page contains all of the code that I created from my Computer Organization (CS 2325) course. All code was written in Assembly for MASM._
 
 </header>
 
@@ -20,7 +20,7 @@ _Create a site or blog from your GitHub repositories with GitHub Pages._
   Link to docs.github.com for further explanations.
   Encourage users to open new tabs for steps!
 -->
-
+<!--
 ## Step 1: Enable GitHub Pages
 
 _Welcome to GitHub Pages and Jekyll :tada:!_
@@ -44,7 +44,7 @@ The first step is to enable GitHub Pages on this [repository](https://docs.githu
   <<< Author notes: Footer >>>
   Add a link to get support, GitHub status page, code of conduct, license link.
 -->
-
+<!--
 ---
 
 Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
