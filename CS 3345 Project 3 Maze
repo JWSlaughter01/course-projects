@@ -1,0 +1,257 @@
+/******************************************************************************
+We have described the generating of mazes in the class (see Section 8.7 of the
+textbook). Suppose we want to output the path in the maze. Assume that the maze is
+represented as an n x m matrix M; each cell in the matrix stores information about what
+walls are present (or absent). The starting point of a path is M[0, 0] and the ending point
+is M[n-1, m-1]
+
+a) Write a program to generate a n x m maze with input of n and m.
+b) Write a program to output a path in the maze. Give output in the form SEN...
+(representing go south, then east, then north, etc.).
+c) Write a program that draws the maze and, at the press of a button, draws the
+path.
+
+*******************************************************************************/
+import java.util.*;
+//scanner, list, arraylsit, queue, linkedlist, map, hasmap, arrays, collections
+//cleaner to use one line than listing each individually
+
+public class Main {
+	private int[][] maze; //array for maze
+	private List<String> path; //stores the path
+	private int n, m;
+	private final int[] dx = {1, 0, -1, 0};
+	private final int[] dy = {0, 1, 0, -1};
+	private final String[] dr = {"S", "E", "N", "W"};
+    
+	public static void main(String[] args) {
+    	Scanner scanner = new Scanner(System.in);
+   	    //prompting for n and m
+    	System.out.println("Enter number of rows(n): ");
+    	int n = scanner.nextInt();
+    	System.out.println("Enter number of columns(m): ");
+    	int m = scanner.nextInt();
+   	    //generating maze of size n x m
+   	    //part A
+    	Main solver = new Main(n, m);
+   	    //outpt path in SEN form, part B
+    	solver.printSolutionPath();
+   	    //part C: Draw maze > draws path after button press
+   	    solver.printMaze();
+    	System.out.println("Would you like me to print the solution?");
+    	System.out.println("The maze path will print so long as your input isn't empty");
+    	//as long as ans isnt't null, it'll be considered the press of a button
+    	String ans = scanner.next();
+    	if (!ans.isEmpty()) {
+        	solver.printMazePath();
+    	} else {
+    	    return;
+    	}
+
+	}
+    //maze class, stores the row and columns
+    //calls the generate maze path and an extra function to makre sure that there is a path
+	public Main(int n, int m) {
+    	this.n = n;
+    	this.m = m;
+    	this.maze = new int[n][m];
+    	this.path = new ArrayList<>();
+    	generateMaze();
+    	ensureSolvable();
+	}
+    
+    //generates default maze and then tries to create a path
+    //starts with all walls, except for the enter and exit locations
+	private void generateMaze() {
+    	for (int i = 0; i < n; i++) {
+        	for (int j = 0; j < m; j++) {
+            	maze[i][j] = 1;
+        	}
+    	}
+    	carvePath(0, 0);
+    	maze[0][0] = 0;
+    	maze[n - 1][m - 1] = 0;
+	}
+    
+    //function in charge of creating a viable path within the maze
+    //recursively carves out parts of the maze, while trying to keep some walls present
+	private void carvePath(int x, int y) {
+    	List<Integer> directions = Arrays.asList(0, 1, 2, 3);
+    	Collections.shuffle(directions);
+    	for (int i : directions) {
+        	int nx = x + dx[i] * 2;
+        	int ny = y + dy[i] * 2;
+        	if (isValid(nx, ny)) {
+            	maze[nx][ny] = 0;
+            	maze[x + dx[i]][y + dy[i]] = 0;
+            	carvePath(nx, ny);
+        	}
+    	}
+	}
+    
+    //support function for carvePath, prevents out of bounds and repeats
+	private boolean isValid(int x, int y) {
+    	if (x >= 0 && x < n && y >= 0 && y < m && maze[x][y] == 1) {
+        	return true;
+    	} else {
+        	return false;
+    	}
+	}
+    
+    //function to search for a path after carving done.
+    //I could combine the two, but it'd prob look different as a maze if i did
+    //Uses BFS to find start to exit and then calls function to record thr path
+	private boolean findPath(int x, int y) {
+    	Queue<int[]> queue = new LinkedList<>();
+    	queue.add(new int[]{x, y});
+    	boolean[][] visited = new boolean[n][m];
+    	visited[x][y] = true;
+    	Map<String, String> directionMap = new HashMap<>();
+   	 
+    	while (!queue.isEmpty()) {
+        	int[] current = queue.poll();
+        	int nx = current[0], ny = current[1];
+        	if (nx == n - 1 && ny == m - 1) {
+            	reconstructPath(directionMap, x, y);
+            	return true;
+        	}
+        	for (int i = 0; i < 4; i++) {
+            	int nxn = nx + dx[i];
+            	int mym = ny + dy[i];
+            	if (isSafe(nxn, mym, visited)) {
+                	queue.add(new int[]{nxn, mym});
+                	visited[nxn][mym] = true;
+                	directionMap.put(nxn + "," + mym, dr[i]);
+            	}
+        	}
+    	}
+    	return false;
+	}
+    
+    //works from exit to start to record the path for SEN output and then reverses the order
+	private void reconstructPath(Map<String, String> directionMap, int x, int y) {
+    	int nx = n - 1, ny = m - 1;
+    	while (nx != x || ny != y) {
+        	String key = nx + "," + ny;
+        	String direction = directionMap.get(key);
+        	path.add(direction);
+        	switch (direction) {
+            	case "S":
+                	nx--;
+                	break;
+            	case "E":
+                	ny--;
+                	break;
+            	case "N":
+                	nx++;
+                	break;
+            	case "W":
+                	ny++;
+                	break;
+            	default:
+                	break;
+        	}
+    	}
+    	Collections.reverse(path);
+	}
+    
+    //checks if a cell has been visited yet
+	private boolean isSafe(int x, int y, boolean[][] visited) {
+    	if (x >= 0 && x < n && y >= 0 && y < m && maze[x][y] == 0 && !visited[x][y]) {
+        	return true;
+    	} else {
+        	return false;
+    	}
+	}
+    
+    //checks if a viable path exists in the maze
+    //slightly changes the maze until it finds a proper path if one doesn't exist
+	private void ensureSolvable() {
+    	if (findPath(0, 0)) {
+        	return;
+    	}
+   	 
+    	for (int i = 0; i < n; i++) {
+        	for (int j = 0; j < m; j++) {
+            	if (maze[i][j] == 1) {
+                	maze[i][j] = 0;
+                	if (findPath(0, 0)) {
+                    	return;
+                	}
+                	maze[i][j] = 1;
+            	}
+        	}
+    	}
+	}
+    
+    //function to display the Maze
+    //uses # for the walls
+	private void printMaze(){
+    	System.out.println("Maze:");
+    	for (int i = 0; i < n; i++) {
+        	for (int j = 0; j < m; j++) {
+            	if (maze[i][j] == 1) {
+                	System.out.print("#");
+            	} else {
+                	System.out.print(" ");
+            	}
+        	}
+        	System.out.println();
+    	}
+	}
+    
+    //function to print the SEN path 
+	private void printSolutionPath() {
+    	StringBuilder sb = new StringBuilder();
+    	for (String direction : path) {
+        	sb.append(direction);
+    	}
+    	System.out.println("Path (SENW): " + sb.toString());
+	}
+    
+    //function to print the path, uses * for the path, # for the walls
+    //basically reconstructPath and then printMaze edited and in one function together
+	private void printMazePath() {
+    	int x = 0, y = 0;
+    	maze[x][y] = 2;
+   	 
+    	for (String step : path) {
+        	switch (step) {
+            	case "S":
+                	x++;
+                	break;
+            	case "E":
+                	y++;
+                	break;
+            	case "N":
+                	x--;
+                	break;
+            	case "W":
+                	y--;
+                	break;
+            	default:
+                	break;
+        	}
+       	 
+        	if (x >= 0 && x < n && y >= 0 && y < m) {
+            	maze[x][y] = 2;
+        	}
+    	}
+       	 
+        	System.out.println("Solution Path");
+        	for (int i = 0; i < n; i++) {
+            	for (int j = 0; j < m; j++) {
+                	if (maze[i][j] == 2) {
+                    	System.out.print("*");
+                	} else if (maze[i][j] == 1) {
+                    	System.out.print("#");
+                	} else {
+                    	System.out.print(" ");
+               	 
+            	}
+        	}
+        	System.out.println();
+    	}
+	}
+    
+}
