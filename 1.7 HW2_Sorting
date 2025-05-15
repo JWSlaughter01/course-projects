@@ -1,0 +1,245 @@
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <climits>
+#include <fstream>
+
+using namespace std;
+
+void modifiedSortGPA(double array1[], int array2[], string array3[], int numElems);
+void modifiedSortID(int array2[], double array1[], string array3[], int numElems);
+//double randGPA();
+int getUserChoice();
+int linearSearchID(int arr[], int numElems, int ID, int &nIter);
+int binarySearchID(int arr[], int numElems, int ID, int &nIter);
+
+int main()
+{
+    /********************************************
+    Start of code that Students should copy and paste
+    *******************************************/
+    const int NUM_ELMTS = 18;
+
+// netID and GPA are parallel arrays
+    int netID[NUM_ELMTS]; // Original netID array
+    double GPA[NUM_ELMTS]; // Original GPA array
+    string major[NUM_ELMTS]; // Original major array
+
+// sortedNetIDbyGPA and sortedGPAbyGPA are parallel arrays
+    int sortedNetIDbyGPA[NUM_ELMTS]; // netID array,sorted by GPA
+    double sortedGPAbyGPA[NUM_ELMTS]; // GPA array, sorted by GPA
+    string sortedMajorbyGPA[NUM_ELMTS]; // Major array, sorted by GPA
+
+// sortedNetIDbyID and sortedGPAbyID are parallel arrays
+    int sortedNetIDbyID[NUM_ELMTS]; // netID array,sorted by netID
+    double sortedGPAbyID[NUM_ELMTS]; // GPA array, sorted by netID
+    string sortedMajorbyID[NUM_ELMTS]; // Major array, sorted by netID
+
+    /********************************************
+    End of code that Students should copy and paste
+    *******************************************/
+    
+    string filename;
+    int index = 0;
+    cout << "Enter file name: ";
+    cin >> filename;
+    //cout << endl; commented removed due to error in test 1
+    
+    //loop for if filename doesn't open anything
+    ifstream inputFile(filename);
+    if (!inputFile) {
+        cout << "Could not open file" << endl << "Exiting" << endl;
+        //cout << "Exiting" << endl;
+        return 1;
+    }
+    
+    //moving element from file to arrays one at a time
+    // while (index < NUM_ELMTS) {
+    //     inputFile >> netID[index];
+    //     inputFile >> major[index];
+    //     inputFile >> GPA[index];
+    //     index++;
+    // }
+    while (index < NUM_ELMTS && inputFile >> netID[index] >> major[index] >> GPA[index]) {
+        index++;
+    }
+    
+    inputFile.close();
+    
+    for (int i = 0; i < index; i++) {
+        sortedNetIDbyGPA[i] = netID[i];
+        sortedGPAbyGPA[i] = GPA[i];
+        sortedMajorbyGPA[i] = major[i];
+
+        sortedNetIDbyID[i] = netID[i];
+        sortedGPAbyID[i] = GPA[i];
+        sortedMajorbyID[i] = major[i];
+    }
+    
+    //I copied these calls from the prototype and was finding errors.. turned out I needed to replaced
+    //"NUM_ELMTS" with "index"
+    modifiedSortGPA(sortedGPAbyGPA, sortedNetIDbyGPA, sortedMajorbyGPA, index);
+    modifiedSortID(sortedNetIDbyID, sortedGPAbyID, sortedMajorbyID, index);
+    
+    
+    //display original arrays
+    //doing this 3 times in a row for original, GPA sort, and ID sort
+    //I tried to make it look as close to the examples provided as I could
+    cout << "Original arrays:" << endl << "----------------" << endl; //removed 5 - b/c test 2 marked as wrong
+    cout << setw(7) << "index" << setw(7) << "netID" << setw(10) << "major" << setw(7) << "GPA" 
+         << setw(7) << "index" << setw(7) << "netID" << setw(10) << "major" << setw(7) << "GPA" << endl;
+    for (int i = 0; i < index; i += 2) { //+2 b/c I want 2 arrays on each line
+        cout << setw(7) << i << setw(7) << netID[i] << setw(10) << major[i] << setw(7) << fixed << setprecision(2) << GPA[i];
+        if (i+1 <= index) {
+            cout << setw(7) << i+1 << setw(7) << netID[i+1] << setw(10) << major[i+1] << setw(7) << fixed << setprecision(2) << GPA[i+1] << endl;
+        } else {
+            cout << endl;
+        }
+        
+    }
+    
+    //display array sorted by GPA
+    cout << "Arrays sorted by GPA:" << endl << "---------------------" << endl;
+    cout << setw(7) << "index" << setw(7) << "netID" << setw(10) << "major" << setw(7) << "GPA" 
+         << setw(7) << "index" << setw(7) << "netID" << setw(10) << "major" << setw(7) << "GPA" << endl;
+    for (int i = 0; i < index; i += 2) { //+2 b/c I want 2 arrays on each line
+        cout << setw(7) << i << setw(7) << sortedNetIDbyGPA[i] << setw(10) << sortedMajorbyGPA[i] << setw(10) << fixed << setprecision(2) << sortedGPAbyGPA[i];
+        if (i+1 < index) {
+            cout << setw(7) << i+1 << setw(7) << sortedNetIDbyGPA[i+1] << setw(10) << sortedMajorbyGPA[i+1] << setw(10) << fixed << setprecision(2) << sortedGPAbyGPA[i+1] << endl;
+        } else {
+            cout << endl;
+        }
+        
+    }
+    
+    //display array sorted by netID
+    cout << "Arrays sorted by netID: " << endl << "-----------------------" << endl;
+    cout << setw(7) << "index" << setw(7) << "netID" << setw(10) << "major" << setw(7) << "GPA" 
+         << setw(7) << "index" << setw(7) << "netID" << setw(10) << "major" << setw(7) << "GPA" << endl;
+    for (int i = 0; i < index; i += 2) { //+2 b/c I want 2 arrays on each line
+        cout << setw(7) << i << setw(7) << sortedNetIDbyID[i] << setw(10) << sortedMajorbyID[i] << setw(10) << fixed << setprecision(2) << sortedGPAbyID[i];
+        if (i+1 < index) {
+            cout << setw(7) << i+1 << setw(7) << sortedNetIDbyID[i+1] << setw(10) << sortedMajorbyID[i+1] << setw(10) << fixed << setprecision(2) << sortedGPAbyID[i+1] << endl;
+        } else {
+            cout << endl;
+        }
+        
+    }
+    
+    
+    int choice = 0;
+    int n = 0;
+    int linIt;
+    int binIt;
+    while (choice != 3) {
+        choice = getUserChoice();
+        if (choice == 1) {
+            cout << "Enter n: ";
+            cin >> n;
+            if (n > index) { //test 5
+                n = index;
+            }
+            cout << "Top " << n << " students are:" << endl << endl;
+            if (n >= index) {
+                n = index;
+            }
+            for (int i = 0; i < n; i++) {
+                cout << "netID: " << sortedNetIDbyGPA[index -1 - i] << ", major: " << sortedMajorbyGPA[index -1 -i] << ", GPA: " << sortedGPAbyGPA[index -1 -i] << endl;
+            }
+        } else if (choice == 2) {
+            cout << "Enter netID: ";
+            cin >> n;
+            linIt = 0;
+            binIt = 0;
+            int linRes = linearSearchID(netID, index, n, linIt);
+            int binRes = binarySearchID(sortedNetIDbyID, index, n, binIt);
+            
+            cout << "Result of linear search:" << endl << "------------------------" << endl;
+            if (linRes != -1) {
+                cout << "Student found at index " << linRes << ", GPA is " << GPA[linRes] << endl;
+            } else {
+                cout << "Student not found" << endl;
+            }
+            cout << "It took " << linIt << " iterations" << endl << endl;
+            
+            cout << "Result of binary search:" << endl << "------------------------" << endl;
+            if (binRes != -1) {
+                cout << "Student found at index " << binRes << ", GPA is " << sortedGPAbyID[binRes] << endl;
+            } else {
+                cout << "Student not found" << endl;
+            }
+            cout << "It took " << binIt << " iterations" << endl;
+        }
+    }
+    
+    cout << "Exiting";
+}
+
+//both of the sorting algorithms below are nearly identical. Largest change is which array is the first in the call list. 
+//if they were all ints or doubles, this could've been condensed into one procedure
+//reverse the sign for the if statement b/c my algorithm sorted in reverse
+void modifiedSortGPA(double array1[], int array2[], string array3[], int numElems) {
+    for (int i = 0; i < numElems - 1; i++) {
+        for (int j = 0; j < numElems - 1 - i; j++) {
+            if (array1[j] > array1[j + 1]) {
+                swap(array1[j], array1[j +1]);
+                swap(array2[j], array2[j +1]);
+                swap(array3[j], array3[j +1]);
+            }
+        }
+        
+    }
+}
+
+void modifiedSortID(int array1[], double array2[], string array3[], int numElems) {
+    for (int i = 0; i < numElems - 1; i++) {
+        for (int j = 0; j < numElems - 1 - i; j++) {
+            if (array1[j] > array1[j + 1]) {
+                swap(array1[j], array1[j + 1]);
+                swap(array2[j], array2[j + 1]);
+                swap(array3[j], array3[j + 1]);
+            }
+        }
+    }
+}
+
+//goal is to prompt for a number from the list
+int getUserChoice() {
+    int choice;
+    cout << "***************" << endl << "Menu of choices" << endl << "***************" << endl;
+    cout << "1 - List top n students" << endl << "2 - Search on a netID" << endl << "3 - Quit" << endl;
+    cin >> choice;
+    return choice;
+}
+
+//search from start to end, ending early if found. O(n)
+int linearSearchID(int arr[], int numElems, int ID, int &nIter) {\
+    nIter = 0;
+    for (int i = 0; i < numElems; i++) {
+        nIter++;
+        if (arr[i] == ID) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+//searching from the middle of a sorted array, O(log n)
+int binarySearchID(int arr[], int numElems, int ID, int &nIter) {
+    nIter = 0;
+    int leftSer = 0;
+    int rightSer = numElems -1;
+    int mid = 0;
+    while (leftSer <= rightSer) {
+        nIter++;
+        mid = leftSer + (rightSer - leftSer) / 2;
+        if (arr[mid] == ID) {
+            return mid;
+        } else if (arr[mid] < ID) {
+            leftSer = mid + 1;
+        } else {
+            rightSer = mid - 1;
+        }
+    }
+    return -1;
+}
